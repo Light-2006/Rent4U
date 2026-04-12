@@ -8,7 +8,12 @@ import { useApp } from '../contexts/AppContext';
 import { BOUTIQUE_IMAGE } from '../data/products';
 
 const TS = {
-  style: { background: '#FAF8F5', color: '#3D2B1F', border: '1px solid #EDE0D0', borderRadius: '1rem' },
+  style: {
+    background: 'var(--card)',
+    color: 'var(--card-foreground)',
+    border: '1px solid var(--border)',
+    borderRadius: '1rem',
+  },
 };
 
 export default function RegisterPage() {
@@ -27,7 +32,7 @@ export default function RegisterPage() {
     : 3;
 
   const strengthLabels = ['', 'Yếu', 'Trung bình', 'Mạnh', 'Rất mạnh'];
-  const strengthColors = ['', 'bg-red-400', 'bg-yellow-400', 'bg-[#8B6F47]', 'bg-green-500'];
+  const strengthColors = ['', 'bg-red-400', 'bg-yellow-400', 'bg-primary', 'bg-green-500'];
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,87 +40,81 @@ export default function RegisterPage() {
       toast.error('Vui lòng điền đầy đủ thông tin', TS);
       return;
     }
-    if (form.password !== form.confirm) {
+    if (form.confirm !== form.password) {
       toast.error('Mật khẩu xác nhận không khớp', TS);
       return;
     }
+    if (form.password.length < 8) {
+      toast.error('Mật khẩu phải có ít nhất 8 ký tự', TS);
+      return;
+    }
     if (!agreed) {
-      toast.error('Vui lòng đồng ý điều khoản sử dụng', TS);
+      toast.error('Vui lòng đồng ý với điều khoản', TS);
       return;
     }
+
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1500));
-    // create user and auto-login (createUser sets currentUser and auth)
-    const username = form.name.trim() ? form.name.trim().replace(/\s+/g, '').toLowerCase() : form.email.split('@')[0];
-    const role = accountType === 'provider' ? 'shopowner' : 'user';
-    const newUser = createUser({ username, email: form.email, password: form.password, role });
+    await new Promise((r) => setTimeout(r, 900));
     setLoading(false);
-    toast.success('Đăng ký thành công! Bạn đã tự động đăng nhập.', { ...TS, duration: 3500 });
-    if (newUser.role === 'admin') {
-      navigate('/admin');
-      return;
+
+    try {
+      const username = form.email.split('@')[0] || form.name.replace(/\s+/g, '').toLowerCase();
+      const role = accountType === 'provider' ? 'shopowner' : 'user';
+      const user = await createUser({ username, email: form.email, password: form.password, role });
+      toast.success('Tạo tài khoản thành công!', { icon: '🎉', ...TS });
+      if (user?.role === 'admin') { navigate('/admin'); return; }
+      if (user?.role === 'shopowner') { navigate('/shopowner'); return; }
+      navigate('/');
+    } catch (err: any) {
+      const msg = err?.message || 'Đăng ký thất bại';
+      toast.error(msg, TS);
     }
-    if (newUser.role === 'shopowner') {
-      navigate('/shopowner');
-      return;
-    }
-    navigate('/profile');
   };
 
   return (
-    <div className="min-h-screen flex bg-[#FAF8F5]">
+    <div className="min-h-screen flex bg-background">
       {/* Left: Image */}
-      <div className="hidden lg:block lg:w-2/5 relative flex-shrink-0">
+      <div className="hidden lg:block lg:w-1/2 relative">
         <ImageWithFallback
           src={BOUTIQUE_IMAGE}
-          alt="Fashion boutique"
+          alt="Boutique"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#3D2B1F]/60 to-[#3D2B1F]/20" />
-        <div className="absolute bottom-10 left-8 right-8">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-7 h-7 bg-[#C4A882] rounded-lg flex items-center justify-center">
-              <span className="text-[#3D2B1F] text-xs font-bold">R4</span>
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
+
+        <div className="absolute inset-0 flex flex-col justify-end p-12 text-white">
+          <div className="flex items-center gap-2 mb-8">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-card-foreground text-xs font-bold">R4</span>
             </div>
-            <span className="font-display text-white text-lg">rent4u</span>
+            <span className="font-display text-white text-xl">rent4u</span>
           </div>
-          <h2 className="font-display text-2xl text-white mb-2">
+          <h2 className="font-display text-3xl text-white mb-3">
             Tham gia cộng đồng<br />
-            <span className="font-display-italic text-[#C4A882]">thời trang bền vững</span>
+            <span className="font-display-italic text-primary">thời trang bền vững</span>
           </h2>
-          <div className="mt-4 space-y-2">
-            {[
-              'Truy cập 5,000+ trang phục cao cấp',
-              'Giao hàng tận nơi trên toàn quốc',
-              'Tiết kiệm tới 90% so với mua mới',
-            ].map((item) => (
-              <div key={item} className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-[#C4A882] rounded-full flex items-center justify-center flex-shrink-0">
-                  <Check size={10} className="text-[#3D2B1F]" />
-                </div>
-                <span className="text-sm text-[#F0E8DC]">{item}</span>
-              </div>
-            ))}
-          </div>
+          <p className="text-primary text-sm leading-relaxed max-w-sm">
+            Thuê hàng nghìn thiết kế thời trang cao cấp với giá phải chăng. Giao tận nơi, mặc đẹp, sống xanh.
+          </p>
         </div>
       </div>
 
       {/* Right: Form */}
-      <div className="flex-1 flex items-center justify-center px-6 py-10 overflow-y-auto">
+      <div className="flex-1 flex items-center justify-center px-6 py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md"
         >
-          <div className="flex items-center gap-2 mb-6 lg:hidden">
-            <div className="w-7 h-7 bg-[#3D2B1F] rounded-lg flex items-center justify-center">
-              <span className="text-[#F0E8DC] text-xs font-bold">R4</span>
+          <div className="flex items-center justify-center gap-2 mb-8 lg:hidden">
+            <div className="w-8 h-8 bg-card-foreground rounded-lg flex items-center justify-center">
+              <span className="text-accent-foreground text-xs font-bold">R4</span>
             </div>
-            <span className="font-display text-[#3D2B1F] text-lg">rent4u</span>
+            <span className="font-display text-card-foreground text-xl">rent4u</span>
           </div>
 
-          <h1 className="font-display text-3xl text-[#3D2B1F] mb-1">Tạo tài khoản</h1>
-          <p className="text-[#9B8E84] text-sm mb-6">Đăng ký miễn phí và nhận ưu đãi 20% đơn đầu</p>
+          <h1 className="font-display text-3xl text-card-foreground mb-2">Tạo tài khoản</h1>
+          <p className="text-muted-foreground text-sm mb-6">Đăng ký miễn phí và nhận ưu đãi 20% đơn đầu</p>
 
           {/* Account type */}
           <div className="grid grid-cols-2 gap-3 mb-6">
@@ -126,18 +125,19 @@ export default function RegisterPage() {
               <button
                 key={opt.val}
                 onClick={() => setAccountType(opt.val)}
+                type="button"
                 className={`flex flex-col items-center gap-2 p-4 border-2 rounded-2xl transition-all text-center ${
                   accountType === opt.val
-                    ? 'border-[#8B6F47] bg-[#FAF8F5]'
-                    : 'border-[#EDE0D0] hover:border-[#C4A882]'
+                    ? 'border-primary bg-accent'
+                    : 'border-border hover:border-primary'
                 }`}
               >
                 <span className="text-2xl">{opt.icon}</span>
                 <div>
-                  <p className={`text-sm font-medium ${accountType === opt.val ? 'text-[#8B6F47]' : 'text-[#3D2B1F]'}`}>
+                  <p className={`text-sm font-medium ${accountType === opt.val ? 'text-primary' : 'text-card-foreground'}`}>
                     {opt.title}
                   </p>
-                  <p className="text-xs text-[#9B8E84]">{opt.desc}</p>
+                  <p className="text-xs text-muted-foreground">{opt.desc}</p>
                 </div>
               </button>
             ))}
@@ -150,31 +150,31 @@ export default function RegisterPage() {
               { key: 'phone', label: 'Số điện thoại', type: 'tel', placeholder: '0xxx xxx xxx' },
             ].map(({ key, label, type, placeholder }) => (
               <div key={key}>
-                <label className="block text-sm font-medium text-[#3D2B1F] mb-1.5">{label}</label>
+                <label className="block text-sm font-medium text-card-foreground mb-1.5">{label}</label>
                 <input
                   type={type}
                   value={form[key as keyof typeof form]}
                   onChange={(e) => setForm({ ...form, [key]: e.target.value })}
                   placeholder={placeholder}
-                  className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE0D0] rounded-xl text-sm text-[#3D2B1F] placeholder-[#C4A882] outline-none focus:border-[#C4A882] transition-colors"
+                  className="w-full px-4 py-3 bg-accent border border-border rounded-xl text-sm text-card-foreground placeholder:text-muted-foreground outline-none focus:border-primary transition-colors"
                 />
               </div>
             ))}
 
             <div>
-              <label className="block text-sm font-medium text-[#3D2B1F] mb-1.5">Mật khẩu</label>
+              <label className="block text-sm font-medium text-card-foreground mb-1.5">Mật khẩu</label>
               <div className="relative">
                 <input
                   type={showPass ? 'text' : 'password'}
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                   placeholder="Tối thiểu 8 ký tự"
-                  className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE0D0] rounded-xl text-sm text-[#3D2B1F] placeholder-[#C4A882] outline-none focus:border-[#C4A882] transition-colors pr-10"
+                  className="w-full px-4 py-3 bg-accent border border-border rounded-xl text-sm text-card-foreground placeholder:text-muted-foreground outline-none focus:border-primary transition-colors pr-10"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9B8E84]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                 >
                   {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -186,27 +186,27 @@ export default function RegisterPage() {
                       <div
                         key={i}
                         className={`flex-1 h-1 rounded-full transition-colors ${
-                          i <= passwordStrength ? strengthColors[passwordStrength] : 'bg-[#EDE0D0]'
+                          i <= passwordStrength ? strengthColors[passwordStrength] : 'bg-muted'
                         }`}
                       />
                     ))}
                   </div>
-                  <p className="text-xs text-[#9B8E84]">{strengthLabels[passwordStrength]}</p>
+                  <p className="text-xs text-muted-foreground">{strengthLabels[passwordStrength]}</p>
                 </div>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[#3D2B1F] mb-1.5">Xác nhận mật khẩu</label>
+              <label className="block text-sm font-medium text-card-foreground mb-1.5">Xác nhận mật khẩu</label>
               <input
                 type="password"
                 value={form.confirm}
                 onChange={(e) => setForm({ ...form, confirm: e.target.value })}
                 placeholder="Nhập lại mật khẩu"
-                className={`w-full px-4 py-3 bg-[#FAF8F5] border rounded-xl text-sm text-[#3D2B1F] placeholder-[#C4A882] outline-none transition-colors ${
+                className={`w-full px-4 py-3 bg-accent border rounded-xl text-sm text-card-foreground placeholder:text-muted-foreground outline-none transition-colors ${
                   form.confirm && form.confirm !== form.password
                     ? 'border-red-400 focus:border-red-400'
-                    : 'border-[#EDE0D0] focus:border-[#C4A882]'
+                    : 'border-border focus:border-primary'
                 }`}
               />
               {form.confirm && form.confirm !== form.password && (
@@ -214,18 +214,19 @@ export default function RegisterPage() {
               )}
             </div>
 
-            <label className="flex items-start gap-2.5 cursor-pointer" onClick={() => setAgreed(!agreed)}>
+            <label className="flex items-start gap-2.5 cursor-pointer mt-3">
               <div
+                onClick={() => setAgreed(!agreed)}
                 className={`w-4 h-4 border-2 rounded flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors ${
-                  agreed ? 'bg-[#8B6F47] border-[#8B6F47]' : 'border-[#C4A882]'
+                  agreed ? 'bg-primary border-primary' : 'border-border'
                 }`}
               >
                 {agreed && <Check size={10} className="text-white" />}
               </div>
-              <span className="text-sm text-[#6B5135] leading-relaxed">
+              <span className="text-sm text-muted-foreground leading-relaxed ml-2">
                 Tôi đồng ý với{' '}
-                <a href="#" className="text-[#8B6F47] underline">Điều khoản sử dụng</a> và{' '}
-                <a href="#" className="text-[#8B6F47] underline">Chính sách bảo mật</a> của rent4u
+                <a href="#" className="text-primary underline">Điều khoản sử dụng</a> và{' '}
+                <a href="#" className="text-primary underline">Chính sách bảo mật</a> của rent4u
               </span>
             </label>
 
@@ -234,7 +235,7 @@ export default function RegisterPage() {
               whileTap={{ scale: 0.99 }}
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 bg-[#8B6F47] text-white rounded-xl font-medium hover:bg-[#6B5135] transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-primary text-primary-foreground rounded-xl font-medium hover:opacity-95 transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -247,9 +248,9 @@ export default function RegisterPage() {
             </motion.button>
           </form>
 
-          <p className="text-center text-sm text-[#9B8E84] mt-5">
+          <p className="text-center text-sm text-muted-foreground mt-5">
             Đã có tài khoản?{' '}
-            <Link to="/login" className="text-[#8B6F47] font-medium hover:text-[#6B5135] transition-colors">
+            <Link to="/login" className="text-primary font-medium hover:text-primary/90 transition-colors">
               Đăng nhập
             </Link>
           </p>

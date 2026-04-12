@@ -14,7 +14,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, view = 'grid' }: ProductCardProps) {
-  const { toggleWishlist, isInWishlist, addToCart, isAuthenticated } = useApp();
+  const { toggleWishlist, isInWishlist, addToCart, isAuthenticated, reviews } = useApp();
   const navigate = useNavigate();
   const location = useLocation();
   const TOAST_STYLE = {
@@ -22,6 +22,12 @@ export function ProductCard({ product, view = 'grid' }: ProductCardProps) {
   };
   const [hovered, setHovered] = useState(false);
   const inWishlist = isInWishlist(product.id);
+
+  // Compute rating/count from reviews state when available to keep list/detail consistent
+  const productReviewList = (reviews ?? []).filter((r) => r.productId === product.id);
+  const totalFromState = productReviewList.length;
+  const totalReviews = totalFromState > 0 ? totalFromState : (product.reviewCount ?? 0);
+  const averageRating = totalFromState > 0 ? productReviewList.reduce((s, r) => s + r.rating, 0) / totalFromState : (product.rating ?? 0);
 
   const handleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -84,7 +90,7 @@ export function ProductCard({ product, view = 'grid' }: ProductCardProps) {
               </div>
               <p className="text-xs text-[#9B8E84] mb-1">{product.provider}</p>
               <h3 className="font-display text-[#3D2B1F] mb-2 text-base line-clamp-2">{product.name}</h3>
-              <StarRating rating={product.rating} count={product.reviewCount} size="sm" />
+              <StarRating rating={averageRating} count={totalReviews} size="sm" />
               <p className="text-sm text-[#9B8E84] mt-2 line-clamp-2 hidden sm:block">{product.description}</p>
             </div>
             <div className="flex items-center justify-between mt-3">
@@ -193,7 +199,7 @@ export function ProductCard({ product, view = 'grid' }: ProductCardProps) {
           <h3 className="font-display text-[#3D2B1F] mb-2 text-sm leading-snug line-clamp-2">
             {product.name}
           </h3>
-          <StarRating rating={product.rating} count={product.reviewCount} size="sm" />
+          <StarRating rating={averageRating} count={totalReviews} size="sm" />
 
           <div className="flex items-center justify-between mt-3 pt-3 border-t border-[#F0E8DC]">
             <div>

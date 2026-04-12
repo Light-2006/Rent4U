@@ -8,7 +8,12 @@ import { useApp } from '../contexts/AppContext';
 import { HERO_IMAGE_2 } from '../data/products';
 
 const TS = {
-  style: { background: '#FAF8F5', color: '#3D2B1F', border: '1px solid #EDE0D0', borderRadius: '1rem' },
+  style: {
+    background: 'var(--card)',
+    color: 'var(--card-foreground)',
+    border: '1px solid var(--border)',
+    borderRadius: '1rem',
+  },
 };
 
 export default function LoginPage() {
@@ -27,18 +32,23 @@ export default function LoginPage() {
       toast.error('Vui lòng điền email hoặc tên đăng nhập và mật khẩu', TS);
       return;
     }
+
     setLoading(true);
     await new Promise((r) => setTimeout(r, 1200));
     setLoading(false);
-    // attempt authentication
+
     try {
-      const user = login({ username: username || undefined, email: email || undefined, password });
-      if (user?.role === 'admin') {
+      const user = await login({ username: username || undefined, email: email || undefined, password });
+      if (!user) {
+        toast.error('Email hoặc mật khẩu không đúng', TS);
+        return;
+      }
+      if (user.role === 'admin') {
         toast.success('Đăng nhập admin thành công!', { icon: '👋', ...TS });
         navigate('/admin');
         return;
       }
-      if (user?.role === 'shopowner') {
+      if (user.role === 'shopowner') {
         toast.success('Đăng nhập thành công!', { icon: '👋', ...TS });
         navigate('/shopowner');
         return;
@@ -50,9 +60,8 @@ export default function LoginPage() {
       toast.error('Đăng nhập thất bại', TS);
     }
   };
-
   return (
-    <div className="min-h-screen flex bg-[#FAF8F5]">
+    <div className="min-h-screen flex bg-background">
       {/* Left: Image */}
       <div className="hidden lg:block lg:w-1/2 relative">
         <ImageWithFallback
@@ -60,19 +69,19 @@ export default function LoginPage() {
           alt="Fashion"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#3D2B1F]/70 to-[#3D2B1F]/30" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#3D2B1F]/70 to-[#3D2B1F]/30" />
         <div className="absolute inset-0 flex flex-col justify-end p-12">
           <div className="flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 bg-[#C4A882] rounded-lg flex items-center justify-center">
-              <span className="text-[#3D2B1F] text-xs font-bold">R4</span>
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-card-foreground text-xs font-bold">R4</span>
             </div>
             <span className="font-display text-white text-xl">rent4u</span>
           </div>
           <h2 className="font-display text-3xl text-white mb-3">
             Mở rộng tủ đồ của bạn<br />
-            <span className="font-display-italic text-[#C4A882]">không giới hạn</span>
+            <span className="font-display-italic text-primary">không giới hạn</span>
           </h2>
-          <p className="text-[#C4A882] text-sm leading-relaxed max-w-sm">
+          <p className="text-primary text-sm leading-relaxed max-w-sm">
             Thuê hàng nghìn thiết kế thời trang cao cấp với giá phải chăng. Giao tận nơi, mặc đẹp, sống xanh.
           </p>
         </div>
@@ -87,14 +96,14 @@ export default function LoginPage() {
         >
           {/* Mobile logo */}
           <div className="flex items-center justify-center gap-2 mb-8 lg:hidden">
-            <div className="w-8 h-8 bg-[#3D2B1F] rounded-lg flex items-center justify-center">
-              <span className="text-[#F0E8DC] text-xs font-bold">R4</span>
+            <div className="w-8 h-8 bg-card-foreground rounded-lg flex items-center justify-center">
+              <span className="text-accent-foreground text-xs font-bold">R4</span>
             </div>
-            <span className="font-display text-[#3D2B1F] text-xl">rent4u</span>
+            <span className="font-display text-card-foreground text-xl">rent4u</span>
           </div>
 
-          <h1 className="font-display text-3xl text-[#3D2B1F] mb-2">Chào mừng trở lại</h1>
-          <p className="text-[#9B8E84] text-sm mb-8">Đăng nhập để khám phá bộ sưu tập mới nhất</p>
+          <h1 className="font-display text-3xl text-card-foreground mb-2">Chào mừng trở lại</h1>
+          <p className="text-muted-foreground text-sm mb-8">Đăng nhập để khám phá bộ sưu tập mới nhất</p>
 
           {/* Social login */}
           <div className="flex flex-col gap-3 mb-6">
@@ -104,7 +113,7 @@ export default function LoginPage() {
             ].map((s) => (
               <button
                 key={s.label}
-                className="w-full flex items-center gap-3 px-4 py-3 bg-white border border-[#EDE0D0] rounded-xl text-sm text-[#3D2B1F] hover:border-[#C4A882] hover:bg-[#FAF8F5] transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-3 bg-card border border-border rounded-xl text-sm text-card-foreground hover:border-primary hover:bg-accent transition-colors"
               >
                 <span
                   className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
@@ -118,37 +127,37 @@ export default function LoginPage() {
           </div>
 
           <div className="flex items-center gap-3 mb-6">
-            <div className="flex-1 h-px bg-[#EDE0D0]" />
-            <span className="text-xs text-[#9B8E84]">hoặc đăng nhập bằng email hoặc tên đăng nhập</span>
-            <div className="flex-1 h-px bg-[#EDE0D0]" />
+            <div className="flex-1 h-px bg-muted" />
+            <span className="text-xs text-muted-foreground">hoặc đăng nhập bằng email hoặc tên đăng nhập</span>
+            <div className="flex-1 h-px bg-muted" />
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-[#3D2B1F] mb-1.5">Tên đăng nhập</label>
+              <label className="block text-sm font-medium text-card-foreground mb-1.5">Tên đăng nhập</label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="vd: minhchau"
-                className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE0D0] rounded-xl text-sm text-[#3D2B1F] placeholder-[#C4A882] outline-none focus:border-[#C4A882] transition-colors"
+                placeholder="vd: nguyenvanA"
+                className="w-full px-4 py-3 bg-accent border border-border rounded-xl text-sm text-card-foreground placeholder:text-muted-foreground outline-none focus:border-primary transition-colors"
               />
-              <p className="text-xs text-[#9B8E84] mt-2">Hoặc điền email bên dưới</p>
+              <p className="text-xs text-muted-foreground mt-2">Hoặc điền email bên dưới</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#3D2B1F] mb-1.5">Email (nếu không dùng tên đăng nhập)</label>
+              <label className="block text-sm font-medium text-card-foreground mb-1.5">Email (nếu không dùng tên đăng nhập)</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="email@example.com"
-                className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE0D0] rounded-xl text-sm text-[#3D2B1F] placeholder-[#C4A882] outline-none focus:border-[#C4A882] transition-colors"
+                className="w-full px-4 py-3 bg-accent border border-border rounded-xl text-sm text-card-foreground placeholder:text-muted-foreground outline-none focus:border-primary transition-colors"
               />
             </div>
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-sm font-medium text-[#3D2B1F]">Mật khẩu</label>
-                <a href="#" className="text-xs text-[#8B6F47] hover:text-[#6B5135] transition-colors">Quên mật khẩu?</a>
+                <label className="text-sm font-medium text-card-foreground">Mật khẩu</label>
+                <a href="#" className="text-xs text-primary hover:text-primary/90 transition-colors">Quên mật khẩu?</a>
               </div>
               <div className="relative">
                 <input
@@ -156,12 +165,12 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 bg-[#FAF8F5] border border-[#EDE0D0] rounded-xl text-sm text-[#3D2B1F] placeholder-[#C4A882] outline-none focus:border-[#C4A882] transition-colors pr-10"
+                  className="w-full px-4 py-3 bg-accent border border-border rounded-xl text-sm text-card-foreground placeholder:text-muted-foreground outline-none focus:border-primary transition-colors pr-10"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9B8E84] hover:text-[#6B5135] transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
                 >
                   {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -169,9 +178,9 @@ export default function LoginPage() {
             </div>
 
             <label className="flex items-center gap-2.5 cursor-pointer">
-              <div className="w-4 h-4 border-2 border-[#C4A882] rounded flex items-center justify-center flex-shrink-0">
+              <div className="w-4 h-4 border-2 border-border rounded flex items-center justify-center flex-shrink-0">
               </div>
-              <span className="text-sm text-[#6B5135]">Ghi nhớ đăng nhập</span>
+              <span className="text-sm text-muted-foreground">Ghi nhớ đăng nhập</span>
             </label>
 
             <motion.button
@@ -179,7 +188,7 @@ export default function LoginPage() {
               whileTap={{ scale: 0.99 }}
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 bg-[#8B6F47] text-white rounded-xl font-medium hover:bg-[#6B5135] transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
+              className="w-full py-3.5 bg-primary text-primary-foreground rounded-xl font-medium hover:opacity-95 transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -192,17 +201,17 @@ export default function LoginPage() {
             </motion.button>
           </form>
 
-          <p className="text-center text-sm text-[#9B8E84] mt-6">
+          <p className="text-center text-sm text-muted-foreground mt-6">
             Chưa có tài khoản?{' '}
-            <Link to="/register" className="text-[#8B6F47] font-medium hover:text-[#6B5135] transition-colors">
+            <Link to="/register" className="text-primary font-medium hover:text-primary/90 transition-colors">
               Đăng ký ngay
             </Link>
           </p>
 
-          <p className="text-center text-xs text-[#C4A882] mt-4">
+          <p className="text-center text-xs text-muted-foreground mt-4">
             Bằng cách đăng nhập, bạn đồng ý với{' '}
-            <a href="#" className="underline hover:text-[#9B8E84]">Điều khoản</a> và{' '}
-            <a href="#" className="underline hover:text-[#9B8E84]">Chính sách bảo mật</a>
+            <a href="#" className="underline hover:text-muted-foreground">Điều khoản</a> và{' '}
+            <a href="#" className="underline hover:text-muted-foreground">Chính sách bảo mật</a>
           </p>
         </motion.div>
       </div>

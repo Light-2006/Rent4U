@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useLayoutEffect, type ReactNode } from 'react';
 import { type Product, products as initialProducts, type Review, reviews as initialReviews, PROVIDER_AVATAR } from '../data/products';
 import mockApi from '../api/mockApi';
+import { hashPassword, verifyPassword } from '../utils/password';
 
 export interface Address {
   id: string;
@@ -40,6 +41,8 @@ export interface Order {
   address: Address | null;
   paymentMethod: PaymentMethod | null;
   status: 'Đang xử lý' | 'Đang giao' | 'Đang thuê' | 'Đã hoàn trả' | 'Hoàn thành' | 'Đã hủy';
+  total?: number;
+  createdAt?: string;
   fullName?: string;
   phone?: string;
   birthDate?: string;
@@ -89,17 +92,22 @@ interface AppContextType {
   cartCount: number;
   wishlistCount: number;
   cartTotal: number;
+  /** Mã đang áp dụng cho giỏ (VD: RENT10), null nếu không có */
+  appliedPromoCode: string | null;
+  setAppliedPromoCode: (code: string | null) => void;
+  /** Số tiền giảm tính từ cartTotal và mã hiện tại */
+  cartDiscountAmount: number;
   isAuthenticated: boolean;
   isAdmin: boolean;
   isShopOwner: boolean;
   setShopOwner: (flag: boolean) => void;
   currentUser: User | null;
   users: User[];
-  createUser: (u: Partial<User>) => User;
+  createUser: (u: Partial<User>) => Promise<User>;
   updateUser: (id: string, updates: Partial<User>) => void;
   deleteUser: (id: string) => void;
   getUserById: (id: string) => User | undefined;
-  login: (opts?: { username?: string; password?: string; email?: string } ) => User | null;
+  login: (opts?: { username?: string; password?: string; email?: string } ) => Promise<User | null>;
   logout: () => void;
   products: Product[];
   createProduct: (p: Partial<Product>) => Product;
@@ -152,9 +160,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>(() =>
     loadFromStorage<CartItem[]>('r4u-cart', [])
   );
-  const [wishlist, setWishlist] = useState<string[]>(() =>
-    loadFromStorage<string[]>('r4u-wishlist', [])
+  const [appliedPromoCode, setAppliedPromoCode] = useState<string | null>(() =>
+    loadFromStorage<string | null>('r4u-cart-promo', null)
   );
+  const [wishlist, setWishlist] = useState<string[]>(() => {
+    try {
+      const storedUser = loadFromStorage<User | null>('r4u-user', null);
+      const key = storedUser?.id ? `r4u-wishlist-${storedUser.id}` : 'r4u-wishlist-guest';
+      return loadFromStorage<string[]>(key, []);
+    } catch {
+      return [];
+    }
+  });
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() =>
     loadFromStorage<boolean>('r4u-auth', false)
   );
@@ -179,35 +196,77 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    localStorage.setItem('r4u-cart', JSON.stringify(cart));
+    try {
+      localStorage.setItem('r4u-cart', JSON.stringify(cart));
+    } catch (e) {
+      console.warn('Failed to persist r4u-cart', e);
+    }
   }, [cart]);
 
   useEffect(() => {
-    localStorage.setItem('r4u-wishlist', JSON.stringify(wishlist));
-  }, [wishlist]);
+    try {
+      if (appliedPromoCode) localStorage.setItem('r4u-cart-promo', JSON.stringify(appliedPromoCode));
+      else localStorage.removeItem('r4u-cart-promo');
+    } catch (e) {
+      console.warn('Failed to persist r4u-cart-promo', e);
+    }
+  }, [appliedPromoCode]);
 
   useEffect(() => {
-    localStorage.setItem('r4u-auth', JSON.stringify(isAuthenticated));
+    try {
+      const key = currentUser?.id ? `r4u-wishlist-${currentUser.id}` : 'r4u-wishlist-guest';
+      localStorage.setItem(key, JSON.stringify(wishlist));
+    } catch (e) {
+      console.warn('Failed to persist wishlist', e);
+    }
+  }, [wishlist, currentUser]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('r4u-auth', JSON.stringify(isAuthenticated));
+    } catch (e) {
+      console.warn('Failed to persist r4u-auth', e);
+    }
   }, [isAuthenticated]);
 
   useEffect(() => {
-    localStorage.setItem('r4u-admin', JSON.stringify(isAdmin));
+    try {
+      localStorage.setItem('r4u-admin', JSON.stringify(isAdmin));
+    } catch (e) {
+      console.warn('Failed to persist r4u-admin', e);
+    }
   }, [isAdmin]);
 
   useEffect(() => {
-    localStorage.setItem('r4u-shopowner', JSON.stringify(isShopOwner));
+    try {
+      localStorage.setItem('r4u-shopowner', JSON.stringify(isShopOwner));
+    } catch (e) {
+      console.warn('Failed to persist r4u-shopowner', e);
+    }
   }, [isShopOwner]);
 
   useEffect(() => {
-    localStorage.setItem('r4u-user', JSON.stringify(currentUser));
+    try {
+      localStorage.setItem('r4u-user', JSON.stringify(currentUser));
+    } catch (e) {
+      console.warn('Failed to persist r4u-user', e);
+    }
   }, [currentUser]);
 
   useEffect(() => {
-    localStorage.setItem('r4u-products', JSON.stringify(products));
+    try {
+      localStorage.setItem('r4u-products', JSON.stringify(products));
+    } catch (e) {
+      console.warn('Failed to persist r4u-products', e);
+    }
   }, [products]);
 
   useEffect(() => {
-    localStorage.setItem('r4u-users', JSON.stringify(users));
+    try {
+      localStorage.setItem('r4u-users', JSON.stringify(users));
+    } catch (e) {
+      console.warn('Failed to persist r4u-users', e);
+    }
   }, [users]);
 
   // Try to load data from mock backend (json-server) if available
@@ -244,11 +303,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [orders, setOrders] = useState<Order[]>(() => loadFromStorage<Order[]>('r4u-orders', []));
 
   useEffect(() => {
-    localStorage.setItem('r4u-orders', JSON.stringify(orders));
+    try {
+      localStorage.setItem('r4u-orders', JSON.stringify(orders));
+    } catch (e) {
+      console.warn('Failed to persist r4u-orders', e);
+    }
   }, [orders]);
 
   useEffect(() => {
-    localStorage.setItem('r4u-reviews', JSON.stringify(reviews));
+    try {
+      localStorage.setItem('r4u-reviews', JSON.stringify(reviews));
+    } catch (e) {
+      console.warn('Failed to persist r4u-reviews', e);
+    }
   }, [reviews]);
 
   // Theme (light / dark) persisted to localStorage and applied via `.dark` class
@@ -306,7 +373,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  const clearCart = () => setCart([]);
+  const clearCart = () => {
+    setCart([]);
+    setAppliedPromoCode(null);
+  };
 
   const toggleWishlist = (productId: string) => {
     setWishlist((prev) =>
@@ -334,49 +404,64 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return sum + item.product.pricePerDay * item.quantity;
   }, 0);
 
-  const login = (opts?: { username?: string; password?: string; email?: string }): User | null => {
-    setIsAuthenticated(true);
-    const uname = (opts?.username ?? opts?.email ?? '').toString();
+  const cartDiscountAmount =
+    appliedPromoCode === 'RENT10' ? Math.floor(cartTotal * 0.1) : 0;
+
+  useEffect(() => {
+    if (cart.length === 0 && appliedPromoCode) setAppliedPromoCode(null);
+  }, [cart.length, appliedPromoCode]);
+
+  const login = async (opts?: { username?: string; password?: string; email?: string }): Promise<User | null> => {
+    const uname = (opts?.username ?? opts?.email ?? '').toString().trim();
     const pwd = opts?.password ?? '';
+
+    if (!uname || !pwd) return null;
 
     // try to find a matching user by username or email
     const found = users.find(
-      (u) => (u.username === uname || u.email === uname || u.username === opts?.username || u.email === opts?.email)
+      (u) => u.username === uname || u.email === uname || u.username === opts?.username || u.email === opts?.email
     );
 
-    if (found && pwd && found.password === pwd) {
-      setCurrentUser(found);
-      setIsAdmin(found.role === 'admin');
-      setIsShopOwner(found.role === 'shopowner');
-      return found;
+    if (!found) return null;
+
+    const stored = found.password ?? '';
+    let authenticated = false;
+    let updatedUser: User = found;
+
+    try {
+      // if stored value looks like our pbkdf2 hash, verify using verifyPassword
+      if (typeof stored === 'string' && stored.startsWith('pbkdf2$')) {
+        authenticated = await verifyPassword(pwd, stored);
+      } else if (stored && stored === pwd) {
+        // legacy plaintext password matched — upgrade to hashed password
+        try {
+          const hashed = await hashPassword(pwd);
+          updatedUser = { ...found, password: hashed };
+          setUsers((prev) => prev.map((u) => (u.id === found.id ? updatedUser : u)));
+          (async () => {
+            try {
+              await mockApi.patchUser(found.id, { password: hashed });
+            } catch {}
+          })();
+        } catch {}
+        authenticated = true;
+      }
+    } catch (e) {
+      authenticated = false;
     }
 
-    // fallback: special credentials or guest
-    const isAdminLogin = uname === 'admin' && pwd === 'admin';
-    const isOwnerLogin = uname === 'owner' && pwd === 'owner';
-    setIsAdmin(isAdminLogin);
-    setIsShopOwner(isOwnerLogin);
+    if (!authenticated) return null;
 
-    if (isAdminLogin) {
-      const admin = users.find((u) => u.role === 'admin') ?? null;
-      if (admin) setCurrentUser(admin);
-      return admin;
-    }
-    if (isOwnerLogin) {
-      const owner = users.find((u) => u.role === 'shopowner') ?? null;
-      if (owner) setCurrentUser(owner);
-      return owner;
-    }
-
-    const guest: User = {
-      id: `guest-${Date.now()}`,
-      username: opts?.username ?? opts?.email ?? `guest${Date.now()}`,
-      email: opts?.email ?? '',
-      role: 'user',
-      createdAt: new Date().toISOString(),
-    };
-    setCurrentUser(guest);
-    return null;
+    setCurrentUser(updatedUser);
+    setIsAuthenticated(true);
+    setIsAdmin(updatedUser.role === 'admin');
+    setIsShopOwner(updatedUser.role === 'shopowner');
+    // load wishlist for this user
+    try {
+      const stored = loadFromStorage<string[]>(`r4u-wishlist-${updatedUser.id}`, []);
+      setWishlist(stored);
+    } catch {}
+    return updatedUser;
   };
 
   const logout = () => {
@@ -384,6 +469,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setIsAdmin(false);
     setIsShopOwner(false);
     setCurrentUser(null);
+    try {
+      const guestStored = loadFromStorage<string[]>('r4u-wishlist-guest', []);
+      setWishlist(guestStored);
+    } catch {
+      setWishlist([]);
+    }
   };
 
   const createProduct = (p: Partial<Product>) => {
@@ -427,14 +518,24 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return newP;
   };
 
-  const createUser = (u: Partial<User>) => {
+  const createUser = async (u: Partial<User>) => {
+    const username = (u.username ?? '').toString().trim() || `user${Date.now()}`;
+    const email = (u.email ?? '').toString().trim();
+
+    // prevent duplicate username/email
+    const exists = users.some((it) => it.username === username || (email && it.email === email));
+    if (exists) throw new Error('Username hoặc email đã tồn tại');
+    if (!u.password) throw new Error('Mật khẩu không được để trống');
+
+    const hashed = await hashPassword(u.password);
+
     const id = String(Date.now());
     const user: User = {
       id,
-      username: u.username ?? `user${id}`,
-      email: u.email ?? '',
+      username,
+      email,
       role: u.role ?? 'user',
-      password: u.password ?? undefined,
+      password: hashed,
       createdAt: new Date().toISOString(),
     };
     setUsers((prev) => [user, ...prev]);
@@ -443,6 +544,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setIsAuthenticated(true);
     setIsAdmin(user.role === 'admin');
     setIsShopOwner(user.role === 'shopowner');
+    // start with an empty wishlist for newly created user
+    setWishlist([]);
     // persist to mock backend in background
     (async () => {
       try {
@@ -491,15 +594,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
     // bump product reviewCount optimistically
     const existing = products.find((p) => p.id === review.productId) ?? null;
     const newCount = (existing?.reviewCount ?? 0) + 1;
-    if (existing) setProducts((prev) => prev.map((p) => (p.id === review.productId ? { ...p, reviewCount: newCount } : p)));
+
+    // compute new average including optimistic review and update product rating
+    const existingProductReviews = reviews.filter((rv) => rv.productId === review.productId);
+    const combined = [review, ...existingProductReviews];
+    const newAvg = combined.reduce((s, it) => s + (it.rating ?? 0), 0) / Math.max(1, combined.length);
+    if (existing) setProducts((prev) => prev.map((p) => (p.id === review.productId ? { ...p, reviewCount: newCount, rating: newAvg } : p)));
 
     (async () => {
       try {
         const saved = await mockApi.createReview(review);
         setReviews((prev) => prev.map((it) => (it.id === review.id ? saved : it)));
-        // persist new reviewCount to product on backend
+        // persist new reviewCount and rating to product on backend
         try {
-          await mockApi.updateProduct(review.productId, { reviewCount: newCount });
+          await mockApi.updateProduct(review.productId, { reviewCount: newCount, rating: newAvg });
         } catch {}
       } catch (e) {}
     })();
@@ -514,11 +622,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (rev) {
       const existing = products.find((p) => p.id === rev.productId) ?? null;
       if (existing) {
-        const newCount = Math.max(0, (existing.reviewCount ?? 1) - 1);
-        setProducts((prev) => prev.map((p) => (p.id === existing.id ? { ...p, reviewCount: newCount } : p)));
+        // compute new counts and average after deletion
+        const remaining = reviews.filter((r) => r.productId === existing.id && r.id !== id);
+        const newCount = Math.max(0, remaining.length);
+        const newAvg = remaining.length > 0 ? remaining.reduce((s, it) => s + it.rating, 0) / remaining.length : 0;
+        setProducts((prev) => prev.map((p) => (p.id === existing.id ? { ...p, reviewCount: newCount, rating: newAvg } : p)));
         (async () => {
           try {
-            await mockApi.updateProduct(existing.id, { reviewCount: newCount });
+            await mockApi.updateProduct(existing.id, { reviewCount: newCount, rating: newAvg });
           } catch {}
         })();
       }
@@ -674,7 +785,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const items = o.items ?? cart;
     const address = o.address ?? (currentUser?.addresses?.find((a) => a.isDefault) ?? null) ?? null;
     const paymentMethod = o.paymentMethod ?? (currentUser?.paymentMethods?.find((m) => m.isDefault) ?? null) ?? null;
-    const total = o.total ?? cartTotal;
+    const total = o.total ?? cartTotal - cartDiscountAmount;
     const order: Order = {
       id,
       userId,
@@ -709,6 +820,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
         cartCount,
         wishlistCount,
         cartTotal,
+        appliedPromoCode,
+        setAppliedPromoCode,
+        cartDiscountAmount,
         isAuthenticated,
         isAdmin,
         isShopOwner,

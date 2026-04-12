@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { motion, useInView } from 'motion/react';
 import { useRef } from 'react';
@@ -10,6 +10,16 @@ import { StarRating } from '../components/ui/StarRating';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { categories, formatPrice, HERO_IMAGE, HERO_IMAGE_2, BOUTIQUE_IMAGE } from '../data/products';
 import { useApp } from '../contexts/AppContext';
+
+function pickRandomItems<T>(items: T[], count: number): T[] {
+  if (items.length === 0) return [];
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy.slice(0, Math.min(count, copy.length));
+}
 
 function FadeSection({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -51,9 +61,21 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [searchQ, setSearchQ] = useState('');
   const navigate = useNavigate();
-  const { products } = useApp();
-  const featured = products.filter((p) => p.isFeatured);
-  const trending = products.filter((p) => p.isTrending);
+  const { products, currentUser } = useApp();
+  const mostLoved = useMemo(() => {
+    const cmpId = (a: { id: string }, b: { id: string }) =>
+      a.id.localeCompare(b.id, undefined, { numeric: true });
+    return [...products]
+      .sort((a, b) => {
+        const byReviews = b.reviewCount - a.reviewCount;
+        if (byReviews !== 0) return byReviews;
+        const byRating = b.rating - a.rating;
+        if (byRating !== 0) return byRating;
+        return cmpId(a, b);
+      })
+      .slice(0, 5);
+  }, [products]);
+  const trendingSpotlight = useMemo(() => pickRandomItems(products, 5), [products]);
 
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 1200);
@@ -264,10 +286,10 @@ export default function HomePage() {
             </div>
           </FadeSection>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5">
             {loading
-              ? Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
-              : featured.map((product) => (
+              ? Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} />)
+              : mostLoved.map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
           </div>
@@ -308,7 +330,7 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.15 }}
-                className="relative bg-white rounded-2xl p-7 border border-[#EDE0D0] hover:shadow-md transition-shadow"
+                className="bg-white rounded-2xl p-7 border border-[#EDE0D0] hover:shadow-md transition-shadow"
               >
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-[#F0E8DC] rounded-2xl flex items-center justify-center flex-shrink-0">
@@ -320,11 +342,6 @@ export default function HomePage() {
                     <p className="text-sm text-[#9B8E84] leading-relaxed">{step.desc}</p>
                   </div>
                 </div>
-                {i < 2 && (
-                  <div className="hidden md:block absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white border border-[#EDE0D0] rounded-full flex items-center justify-center shadow-sm">
-                    <ArrowRight size={14} className="text-[#C4A882]" />
-                  </div>
-                )}
               </motion.div>
             ))}
           </div>
@@ -346,7 +363,7 @@ export default function HomePage() {
             </div>
           </FadeSection>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            {trending.map((product) => (
+            {trendingSpotlight.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
@@ -485,12 +502,14 @@ export default function HomePage() {
                 Đăng ký ngay hôm nay và nhận ưu đãi giảm 20% cho đơn thuê đầu tiên.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link
-                  to="/register"
-                  className="px-8 py-3.5 bg-[#C4A882] text-[#3D2B1F] rounded-2xl font-medium hover:bg-[#D4A853] transition-colors"
-                >
-                  Đăng ký miễn phí
-                </Link>
+                {!currentUser && (
+                  <Link
+                    to="/register"
+                    className="px-8 py-3.5 bg-[#C4A882] text-[#3D2B1F] rounded-2xl font-medium hover:bg-[#D4A853] transition-colors"
+                  >
+                    Đăng ký miễn phí
+                  </Link>
+                )}
                 <Link
                   to="/products"
                   className="px-8 py-3.5 border border-[#6B5135] text-[#C4A882] rounded-2xl hover:border-[#C4A882] hover:text-white transition-colors"

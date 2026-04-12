@@ -14,11 +14,19 @@ const TOASTER_STYLE = {
 };
 
 export default function CartPage() {
-  const { cart, removeFromCart, updateCartItem, cartTotal } = useApp();
+  const {
+    cart,
+    removeFromCart,
+    updateCartItem,
+    cartTotal,
+    products,
+    appliedPromoCode,
+    setAppliedPromoCode,
+    cartDiscountAmount,
+  } = useApp();
   const navigate = useNavigate();
   const [promoCode, setPromoCode] = useState('');
-  const [promoApplied, setPromoApplied] = useState(false);
-  const { products } = useApp();
+  const promoApplied = appliedPromoCode === 'RENT10';
   const suggested = products.filter((p) => !cart.some((c) => c.product.id === p.id)).slice(0, 4);
 
   const handleRemove = (id: string, name: string) => {
@@ -38,12 +46,11 @@ export default function CartPage() {
   };
 
   const shipping = 35000;
-  const discount = promoApplied ? Math.floor(cartTotal * 0.1) : 0;
-  const finalTotal = cartTotal + shipping - discount;
+  const finalTotal = cartTotal + shipping - cartDiscountAmount;
 
   const handlePromo = () => {
     if (promoCode.toUpperCase() === 'RENT10') {
-      setPromoApplied(true);
+      setAppliedPromoCode('RENT10');
       toast.success('Mã giảm giá đã được áp dụng! -10%', { icon: '🎉', ...TOASTER_STYLE });
     } else {
       toast.error('Mã giảm giá không hợp lệ', TOASTER_STYLE);
@@ -219,8 +226,8 @@ export default function CartPage() {
               </p>
               <div className="flex gap-2">
                 <input
-                  value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value)}
+                  value={promoApplied ? 'RENT10' : promoCode}
+                  onChange={(e) => !promoApplied && setPromoCode(e.target.value)}
                   placeholder="Nhập mã (VD: RENT10)"
                   disabled={promoApplied}
                   className="flex-1 px-3 py-2.5 bg-[#FAF8F5] border border-[#EDE0D0] rounded-xl text-sm text-[#3D2B1F] placeholder-[#C4A882] outline-none focus:border-[#C4A882] transition-colors disabled:opacity-50"
@@ -254,7 +261,7 @@ export default function CartPage() {
                 {promoApplied && (
                   <div className="flex justify-between text-sm">
                     <span className="text-green-600">Giảm giá (10%)</span>
-                    <span className="text-green-600">−{formatPrice(discount)}</span>
+                    <span className="text-green-600">−{formatPrice(cartDiscountAmount)}</span>
                   </div>
                 )}
               </div>

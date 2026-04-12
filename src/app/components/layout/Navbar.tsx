@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ShoppingBag, Heart, Search, User, Menu, X, ChevronDown } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 
+import { logoSmall, logoLight, logoDark } from '@/assets';
+
 const NAV_LINKS = [
   { label: 'Trang chủ', to: '/' },
   {
@@ -69,10 +71,9 @@ export function Navbar() {
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-              <div className="w-8 h-8 bg-[#3D2B1F] rounded-lg flex items-center justify-center">
-                <span className="text-[#F0E8DC] text-xs font-bold tracking-tighter">R4</span>
-              </div>
-              <span className="font-display text-foreground text-xl tracking-tight">rent4u</span>
+              <img src={logoSmall} alt="Rent4U" className="w-8 h-8 object-contain rounded-lg" />
+              <img src={logoLight} alt="Rent4U" className="block dark:hidden h-6 object-contain" />
+              <img src={logoDark} alt="Rent4U" className="hidden dark:block h-6 object-contain" />
             </Link>
 
             {/* Desktop Nav */}
@@ -132,10 +133,15 @@ export function Navbar() {
                 <Search size={18} />
               </button>
 
-              {/* Wishlist */}
-              <Link
-                to="/profile"
+              {/* Wishlist (go straight to wishlist tab; ask to login if needed) */}
+              <button
+                onClick={() => {
+                  const target = `/profile?tab=${encodeURIComponent('Yêu thích')}`;
+                  if (isAuthenticated) navigate(target);
+                  else navigate('/login', { state: { from: target } });
+                }}
                 className="relative w-9 h-9 flex items-center justify-center rounded-xl text-primary hover:bg-accent transition-colors"
+                aria-label="Yêu thích"
               >
                 <Heart size={18} />
                 {wishlistCount > 0 && (
@@ -143,7 +149,7 @@ export function Navbar() {
                     {wishlistCount}
                   </span>
                 )}
-              </Link>
+              </button>
 
               {/* Cart */}
               <Link

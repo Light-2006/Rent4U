@@ -1,6 +1,8 @@
 import { Link } from 'react-router';
 import { Instagram, MessageCircle, Youtube } from 'lucide-react';
 
+import { logoSmall, logoLight, logoDark } from '@/assets';
+
 export function Footer() {
   return (
     <footer className="bg-[#3D2B1F] text-[#C4A882]">
@@ -30,12 +32,11 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-10">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-[#C4A882] rounded-lg flex items-center justify-center">
-                <span className="text-[#3D2B1F] text-xs font-bold">R4</span>
+              <div className="flex items-center gap-2 mb-4">
+                <img src={logoSmall} alt="Rent4U" className="w-8 h-8 object-contain rounded-lg" />
+                <img src={logoLight} alt="Rent4U" className="block dark:hidden h-5 object-contain" />
+                <img src={logoDark} alt="Rent4U" className="hidden dark:block h-5 object-contain" />
               </div>
-              <span className="font-display text-white text-lg">rent4u</span>
-            </div>
             <p className="text-sm text-[#9B8E84] leading-relaxed mb-5">
               Nền tảng thuê thời trang hàng đầu Việt Nam, kết nối người dùng với các nhà cung cấp uy tín.
             </p>

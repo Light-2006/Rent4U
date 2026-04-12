@@ -19,7 +19,7 @@ const TOAST_STYLE = {
 };
 
 export default function CheckoutPage() {
-  const { cart, cartTotal, clearCart, currentUser, createOrder, addAddress } = useApp();
+  const { cart, cartTotal, cartDiscountAmount, clearCart, currentUser, createOrder, addAddress } = useApp();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [payMethod, setPayMethod] = useState('card');
@@ -37,7 +37,7 @@ export default function CheckoutPage() {
 
   const [shippingMethod, setShippingMethod] = useState<'standard' | 'express'>('standard');
   const shipping = shippingMethod === 'express' ? 35000 : 0;
-  const total = cartTotal + shipping;
+  const total = cartTotal + shipping - cartDiscountAmount;
 
   const handleNext = () => {
     if (step === 0) {
@@ -456,6 +456,12 @@ export default function CheckoutPage() {
                   <span className="text-[#9B8E84]">Phí ship</span>
                   <span className="text-[#3D2B1F]">{formatPrice(shipping)}</span>
                 </div>
+                {cartDiscountAmount > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-green-600">Giảm giá (RENT10)</span>
+                    <span className="text-green-600">−{formatPrice(cartDiscountAmount)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between font-medium pt-2 border-t border-[#F0E8DC]">
                   <span className="text-[#3D2B1F]">Tổng</span>
                   <span className="text-[#8B6F47] font-display">{formatPrice(total)}</span>

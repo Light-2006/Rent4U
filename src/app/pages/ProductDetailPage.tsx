@@ -24,6 +24,10 @@ export default function ProductDetailPage() {
   const product = products.find((p) => p.id === id) ?? products[0];
   const related = products.filter((p) => p.id !== product.id).slice(0, 4);
   const productReviews = reviews.filter((r) => r.productId === product.id).slice(0, 3);
+  const productReviewList = reviews.filter((r) => r.productId === product.id);
+  const totalFromState = productReviewList.length;
+  const totalReviews = totalFromState > 0 ? totalFromState : (product.reviewCount ?? 0);
+  const averageRating = totalFromState > 0 ? productReviewList.reduce((s, r) => s + r.rating, 0) / totalFromState : (product.rating ?? 0);
   const tabPanelRef = useRef<HTMLDivElement | null>(null);
 
   const [activeImg, setActiveImg] = useState(0);
@@ -482,14 +486,15 @@ export default function ProductDetailPage() {
                 {/* Review summary */}
                 <div className="flex flex-col sm:flex-row gap-8 mb-8">
                   <div className="flex flex-col items-center gap-2 flex-shrink-0">
-                    <span className="font-display text-5xl text-[#3D2B1F]">{product.rating.toFixed(1)}</span>
-                    <StarRating rating={product.rating} size="md" />
-                    <p className="text-xs text-[#9B8E84]">{product.reviewCount} đánh giá</p>
-                  </div>
+                          {/* sync rating/count with actual reviews when available */}
+                          <span className="font-display text-5xl text-[#3D2B1F]">{averageRating.toFixed(1)}</span>
+                          <StarRating rating={averageRating} size="md" />
+                          <p className="text-xs text-[#9B8E84]">{totalReviews} đánh giá</p>
+                        </div>
                   <div className="flex-1">
                     {[5, 4, 3, 2, 1].map((star) => {
-                      const count = reviews.filter((r) => r.productId === product.id && r.rating === star).length;
-                      const pct = Math.round((count / Math.max(1, product.reviewCount)) * 100);
+                      const count = productReviewList.filter((r) => r.rating === star).length;
+                      const pct = Math.round((count / Math.max(1, totalReviews)) * 100);
                       return (
                         <div key={star} className="flex items-center gap-3 mb-3">
                           <span className="text-xs w-6">{star}★</span>
@@ -536,7 +541,7 @@ export default function ProductDetailPage() {
                 </div>
 
                 <button className="mt-5 w-full py-3 border border-[#C4A882] text-[#8B6F47] rounded-xl text-sm hover:bg-[#F0E8DC] transition-colors">
-                  Xem tất cả {product.reviewCount} đánh giá
+                  Xem tất cả {totalReviews} đánh giá
                 </button>
               </div>
             )}
