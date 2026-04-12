@@ -1,0 +1,25 @@
+
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Rent4U</title>
+      <script>
+        (function () {
+          try {
+            var raw = localStorage.getItem('r4u-theme');
+            var v = raw === 'dark' || raw === 'light' ? raw : raw ? JSON.parse(raw) : null;
+            if (v === 'dark') document.documentElement.classList.add('dark');
+          } catch (e) {}
+        })();
+      </script>
+      <style>html, body { height: 100%; margin: 0; } #root { height: 100%; }</style>
+    </head>
+
+    <body>
+      <div id="root"></div>
+      <script type="module" src="/src/main.tsx"></script>
+    </body>
+  </html>
+  

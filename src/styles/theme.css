@@ -1,0 +1,226 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  --background: #FAF8F5;
+  --foreground: #1F1A17;
+  --card: #FFFFFF;
+  --card-foreground: #1F1A17;
+  --popover: #FFFFFF;
+  --popover-foreground: #1F1A17;
+  --primary: #8B6F47;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F0E8DC;
+  --secondary-foreground: #3D2B1F;
+  --muted: #EDE0D0;
+  --muted-foreground: #9B8E84;
+  --accent: #F0E8DC;
+  --accent-foreground: #3D2B1F;
+  --destructive: #C0392B;
+  --destructive-foreground: #FFFFFF;
+  --border: rgba(139, 111, 71, 0.18);
+  --input: transparent;
+  --input-background: #F5F0EA;
+  --switch-background: #C4A882;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: rgba(139, 111, 71, 0.4);
+  --chart-1: #8B6F47;
+  --chart-2: #C4A882;
+  --chart-3: #3D2B1F;
+  --chart-4: #D4A853;
+  --chart-5: #6B5135;
+  --radius: 0.75rem;
+  --sidebar: #FAF8F5;
+  --sidebar-foreground: #1F1A17;
+  --sidebar-primary: #8B6F47;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F0E8DC;
+  --sidebar-accent-foreground: #3D2B1F;
+  --sidebar-border: rgba(139, 111, 71, 0.18);
+  --sidebar-ring: rgba(139, 111, 71, 0.4);
+
+  /* Brand extended palette */
+  --brand-cream: #FAF8F5;
+  --brand-cream-dark: #F0E8DC;
+  --brand-beige: #EDE0D0;
+  --brand-brown-light: #C4A882;
+  --brand-brown: #8B6F47;
+  --brand-brown-dark: #6B5135;
+  --brand-espresso: #3D2B1F;
+  --brand-gold: #D4A853;
+  --brand-muted: #9B8E84;
+}
+
+.dark {
+  --background: #1c1917;
+  --foreground: #faf8f5;
+  --card: #252018;
+  --card-foreground: #faf8f5;
+  --popover: #252018;
+  --popover-foreground: #faf8f5;
+  --primary: #c4a882;
+  --primary-foreground: #1f1a17;
+  --secondary: #3d342e;
+  --secondary-foreground: #f0e8dc;
+  --muted: #3d342e;
+  --muted-foreground: #a89b8f;
+  --accent: #3d342e;
+  --accent-foreground: #f0e8dc;
+  --destructive: #e74c3c;
+  --destructive-foreground: #ffffff;
+  --border: rgba(196, 168, 130, 0.22);
+  --input: transparent;
+  --input-background: #2e2823;
+  --switch-background: #6b5135;
+  --ring: rgba(212, 168, 83, 0.45);
+  --chart-1: #d4a853;
+  --chart-2: #c4a882;
+  --chart-3: #8b6f47;
+  --chart-4: #f0e8dc;
+  --chart-5: #6b5135;
+  --sidebar: #1c1917;
+  --sidebar-foreground: #faf8f5;
+  --sidebar-primary: #c4a882;
+  --sidebar-primary-foreground: #1f1a17;
+  --sidebar-accent: #3d342e;
+  --sidebar-accent-foreground: #f0e8dc;
+  --sidebar-border: rgba(196, 168, 130, 0.22);
+  --sidebar-ring: rgba(212, 168, 83, 0.45);
+  --brand-cream: #1c1917;
+  --brand-cream-dark: #2a2420;
+  --brand-beige: #3d342e;
+  --brand-brown-light: #a89b8f;
+  --brand-brown: #c4a882;
+  --brand-brown-dark: #d4a853;
+  --brand-espresso: #f0e8dc;
+  --brand-gold: #d4a853;
+  --brand-muted: #9b8e84;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Brand colors as Tailwind utilities */
+  --color-brand-cream: var(--brand-cream);
+  --color-brand-cream-dark: var(--brand-cream-dark);
+  --color-brand-beige: var(--brand-beige);
+  --color-brand-brown-light: var(--brand-brown-light);
+  --color-brand-brown: var(--brand-brown);
+  --color-brand-brown-dark: var(--brand-brown-dark);
+  --color-brand-espresso: var(--brand-espresso);
+  --color-brand-gold: var(--brand-gold);
+  --color-brand-muted: var(--brand-muted);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  html {
+    font-size: var(--font-size);
+  }
+
+  h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--brand-espresso);
+  }
+
+  h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: var(--text-xl);
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--brand-espresso);
+  }
+
+  h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: var(--text-lg);
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--brand-espresso);
+  }
+
+  h4 {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+    color: var(--brand-espresso);
+  }
+
+  label {
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+    color: var(--brand-espresso);
+  }
+
+  button {
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  input, textarea, select {
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
+  }
+
+  .dark h1,
+  .dark h2,
+  .dark h3,
+  .dark h4 {
+    color: var(--foreground);
+  }
+
+  .dark label {
+    color: var(--foreground);
+  }
+}

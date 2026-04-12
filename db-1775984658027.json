@@ -1,0 +1,139 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "name": "Đầm Dạ Hội Lụa Đen",
+      "provider": "Élégance Rental House",
+      "providerAvatar": "https://images.unsplash.com/photo-1763987275895-72f645d0acbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "providerRating": 4.9,
+      "providerTotalRentals": 342,
+      "ownerId": null,
+      "description": "Chiếc đầm dạ hội lụa đen sang trọng với đường cắt tinh tế, phù hợp cho các buổi tiệc tối, sự kiện gala và lễ tốt nghiệp. Chất liệu lụa cao cấp ôm vóc dáng hoàn hảo, tạo nên vẻ quyến rũ và thanh lịch.",
+      "pricePerDay": 480000,
+      "depositAmount": 2000000,
+      "rating": 4.9,
+      "reviewCount": 128,
+      "category": "Đầm dạ hội",
+      "tags": [
+        "dạ hội",
+        "sang trọng",
+        "lụa",
+        "tiệc tối"
+      ],
+      "sizes": [
+        "XS",
+        "S",
+        "M",
+        "L"
+      ],
+      "colors": [
+        {
+          "name": "Đen",
+          "hex": "#1A1A1A"
+        },
+        {
+          "name": "Đỏ rượu",
+          "hex": "#722F37"
+        }
+      ],
+      "isAvailable": true,
+      "isNew": false,
+      "isTrending": true,
+      "isFeatured": true,
+      "images": [
+        "https://images.unsplash.com/photo-1764998112626-23f005c580d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+      ],
+      "condition": "Như mới"
+    },
+    {
+      "id": "2",
+      "name": "Váy Hoa Midi Duyên Dáng",
+      "provider": "Blooming Wardrobe",
+      "providerAvatar": "https://images.unsplash.com/photo-1763987275895-72f645d0acbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "providerRating": 4.7,
+      "providerTotalRentals": 215,
+      "ownerId": null,
+      "description": "Chiếc váy hoa midi nhẹ nhàng, phù hợp cho dã ngoại, sinh nhật và các buổi chụp ảnh ngoài trời.",
+      "pricePerDay": 195000,
+      "depositAmount": 800000,
+      "rating": 4.7,
+      "reviewCount": 89,
+      "category": "Váy liền",
+      "tags": [
+        "hoa nhí",
+        "nhẹ nhàng",
+        "chụp ảnh",
+        "dã ngoại"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "colors": [
+        {
+          "name": "Hoa xanh",
+          "hex": "#7EB5D6"
+        },
+        {
+          "name": "Hoa hồng",
+          "hex": "#E8A0A0"
+        }
+      ],
+      "isAvailable": true,
+      "isNew": true,
+      "isTrending": false,
+      "isFeatured": true,
+      "images": [
+        "https://images.unsplash.com/photo-1773335954141-dd2c19b9fcd6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+      ],
+      "condition": "Rất tốt"
+    }
+  ],
+  "users": [
+    {
+      "id": "u-admin",
+      "username": "admin",
+      "email": "admin@example.com",
+      "role": "admin",
+      "password": "admin",
+      "createdAt": "2026-04-12T00:00:00.000Z",
+      "addresses": [],
+      "paymentMethods": []
+    },
+    {
+      "id": "u-owner",
+      "username": "owner",
+      "email": "owner@example.com",
+      "role": "shopowner",
+      "password": "owner",
+      "createdAt": "2026-04-12T00:00:00.000Z",
+      "addresses": [],
+      "paymentMethods": []
+    },
+    {
+      "id": "u-1",
+      "username": "minhchau",
+      "email": "minh.chau@example.com",
+      "role": "user",
+      "password": "password",
+      "createdAt": "2026-04-12T00:00:00.000Z",
+      "addresses": [],
+      "paymentMethods": []
+    }
+  ],
+  "orders": [],
+  "reviews": [
+    {
+      "id": "r1",
+      "productId": "1",
+      "userName": "Nguyễn Minh Châu",
+      "userAvatar": "https://images.unsplash.com/photo-1763987275895-72f645d0acbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "rating": 5,
+      "comment": "Đầm rất đẹp và sang trọng! Chất lụa mềm mại, đường may tinh tế...",
+      "date": "2026-03-15",
+      "helpful": 24
+    }
+  ]
+}
