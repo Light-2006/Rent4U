@@ -18,6 +18,8 @@ jobs:
     env:
       # Set base to '/<repo>/' so Vite builds with correct asset paths on GitHub Pages
       VITE_BASE: "/${{ github.event.repository.name }}/"
+      # Opt into Node.js 24 for JavaScript actions to avoid Node 20 deprecation warnings
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
     steps:
       - uses: actions/checkout@v4
 
