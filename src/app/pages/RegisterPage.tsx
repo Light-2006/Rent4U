@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { Eye, EyeOff, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { logoSmall, logoLight, logoDark } from '@/assets';
 import { useApp } from '../contexts/AppContext';
 import { BOUTIQUE_IMAGE } from '../data/products';
 
@@ -83,12 +84,11 @@ export default function RegisterPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
 
         <div className="absolute inset-0 flex flex-col justify-end p-12 text-white">
-            <div className="flex items-center gap-2 mb-8">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-card-foreground text-xs font-bold">R4</span>
-            </div>
-            <span translate="no" className="font-display text-white text-xl notranslate">rent4u</span>
-          </div>
+            <Link to="/" className="flex items-center gap-2 mb-8 flex-shrink-0">
+              <img src={logoSmall} alt="Rent4U" className="w-8 h-8 object-contain rounded-lg" />
+              <img src={logoLight} alt="Rent4U" className="block dark:hidden h-6 object-contain" />
+              <img src={logoDark} alt="Rent4U" className="hidden dark:block h-6 object-contain" />
+            </Link>
           <h2 className="font-display text-3xl text-white mb-3">
             Tham gia cộng đồng<br />
             <span className="font-display-italic text-primary">thời trang bền vững</span>
@@ -107,11 +107,12 @@ export default function RegisterPage() {
           className="w-full max-w-md"
         >
             <div className="flex items-center justify-center gap-2 mb-8 lg:hidden">
-            <div className="w-8 h-8 bg-card-foreground rounded-lg flex items-center justify-center">
-              <span className="text-accent-foreground text-xs font-bold">R4</span>
+              <Link to="/" className="flex items-center gap-2">
+                <img src={logoSmall} alt="Rent4U" className="w-8 h-8 object-contain rounded-lg" />
+                <img src={logoLight} alt="Rent4U" className="block dark:hidden h-6 object-contain" />
+                <img src={logoDark} alt="Rent4U" className="hidden dark:block h-6 object-contain" />
+              </Link>
             </div>
-            <span translate="no" className="font-display text-card-foreground text-xl notranslate">rent4u</span>
-          </div>
 
           <h1 className="font-display text-3xl text-card-foreground mb-2">Tạo tài khoản</h1>
           <p className="text-muted-foreground text-sm mb-6">Đăng ký miễn phí và nhận ưu đãi 20% đơn đầu</p>
