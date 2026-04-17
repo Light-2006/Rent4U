@@ -57,6 +57,11 @@ const testimonials = [
   },
 ];
 
+function renderNoTranslate(s: string) {
+  const parts = s.split(/(rent4u)/i);
+  return parts.map((part, i) => (/rent4u/i.test(part) ? <span key={i} translate="no" className="notranslate">{part}</span> : part));
+}
+
 export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [searchQ, setSearchQ] = useState('');
@@ -93,8 +98,8 @@ export default function HomePage() {
             alt="Fashion hero"
             className="w-full h-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#FAF8F5] via-[#FAF8F5]/80 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#F0E8DC]/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-accent via-accent/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-accent/30 to-transparent" />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-12 pb-20">
@@ -104,16 +109,16 @@ export default function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#F0E8DC] border border-[#C4A882] rounded-full text-xs text-[#8B6F47] font-medium mb-6">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-accent border border-primary rounded-full text-xs text-primary font-medium mb-6">
                 <Sparkles size={12} />
                 Bộ sưu tập Xuân Hè 2026
               </span>
-              <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl text-[#3D2B1F] leading-tight mb-6">
+              <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl text-foreground leading-tight mb-6">
                 Thời trang{' '}
-                <span className="font-display-italic text-[#8B6F47]">sang trọng</span>
+                <span className="font-display-italic text-primary">sang trọng</span>
                 {' '}cho mọi khoảnh khắc
               </h1>
-              <p className="text-[#6B5135] text-base sm:text-lg mb-8 leading-relaxed">
+              <p className="text-muted-foreground text-base sm:text-lg mb-8 leading-relaxed">
                 Thuê trang phục cao cấp với giá phải chăng. Hơn 5,000 thiết kế từ các thương hiệu hàng đầu, giao tận nơi, mặc đẹp không lo giá.
               </p>
             </motion.div>
@@ -126,14 +131,14 @@ export default function HomePage() {
             >
               <Link
                 to="/products"
-                className="flex items-center gap-2 px-7 py-3.5 bg-[#8B6F47] text-white rounded-2xl hover:bg-[#6B5135] transition-all hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
+                className="flex items-center gap-2 px-7 py-3.5 bg-primary text-primary-foreground rounded-2xl hover:bg-primary/90 transition-all hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
               >
                 Thuê ngay
                 <ArrowRight size={16} />
               </Link>
               <a
                 href="#how-it-works"
-                className="px-7 py-3.5 border border-[#C4A882] text-[#6B5135] rounded-2xl hover:bg-[#F0E8DC] transition-all"
+                className="px-7 py-3.5 border border-primary text-muted-foreground rounded-2xl hover:bg-accent transition-all"
               >
                 Cách hoạt động
               </a>
@@ -147,8 +152,8 @@ export default function HomePage() {
               transition={{ delay: 0.7 }}
               className="flex gap-2 max-w-md"
             >
-              <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-white/95 backdrop-blur-sm border border-[#EDE0D0] rounded-2xl shadow-sm">
-                <svg className="w-4 h-4 text-[#9B8E84] flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="flex-1 flex items-center gap-3 px-4 py-3 bg-white/95 backdrop-blur-sm border border-border rounded-2xl shadow-sm">
+                <svg className="w-4 h-4 text-muted-foreground flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <circle cx="11" cy="11" r="7" strokeWidth="2" />
                   <path d="m21 21-3.5-3.5" strokeWidth="2" strokeLinecap="round" />
                 </svg>
@@ -156,10 +161,10 @@ export default function HomePage() {
                   value={searchQ}
                   onChange={(e) => setSearchQ(e.target.value)}
                   placeholder="Tìm đầm, áo, túi xách..."
-                  className="flex-1 bg-transparent outline-none text-sm text-[#3D2B1F] placeholder-[#9B8E84]"
+                  className="flex-1 bg-transparent outline-none text-sm text-foreground placeholder:text-muted-foreground"
                 />
               </div>
-              <button type="submit" className="px-5 py-3 bg-[#3D2B1F] text-[#F0E8DC] rounded-2xl text-sm hover:bg-[#6B5135] transition-colors">
+              <button type="submit" className="px-5 py-3 bg-primary text-primary-foreground rounded-2xl text-sm hover:bg-primary/90 transition-colors">
                 Tìm
               </button>
             </motion.form>
@@ -177,8 +182,8 @@ export default function HomePage() {
                 { n: '50K+', l: 'Khách hàng' },
               ].map(({ n, l }) => (
                 <div key={l}>
-                  <div className="font-display text-xl text-[#3D2B1F]">{n}</div>
-                  <div className="text-xs text-[#9B8E84]">{l}</div>
+                  <div className="font-display text-xl text-foreground">{n}</div>
+                  <div className="text-xs text-muted-foreground">{l}</div>
                 </div>
               ))}
             </motion.div>
@@ -192,16 +197,16 @@ export default function HomePage() {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="absolute right-8 bottom-16 hidden lg:block w-56"
         >
-          <div className="bg-white rounded-2xl shadow-2xl border border-[#EDE0D0] p-3">
+          <div className="bg-card rounded-2xl shadow-2xl border border-border p-3">
             <ImageWithFallback
               src={products[0].images[0]}
               alt="Featured"
               className="w-full h-36 object-cover rounded-xl mb-3"
             />
-            <p className="text-xs text-[#9B8E84] mb-0.5">{products[0].provider}</p>
-            <p className="font-display text-[#3D2B1F] text-sm mb-2">{products[0].name}</p>
+            <p className="text-xs text-muted-foreground mb-0.5">{products[0].provider}</p>
+            <p className="font-display text-foreground text-sm mb-2">{products[0].name}</p>
             <div className="flex items-center justify-between">
-              <span className="text-[#8B6F47] text-sm font-semibold">{formatPrice(products[0].pricePerDay)}/ngày</span>
+              <span className="text-primary text-sm font-semibold">{formatPrice(products[0].pricePerDay)}/ngày</span>
               <span className="w-6 h-6 bg-green-100 text-green-700 text-xs rounded-full flex items-center justify-center">●</span>
             </div>
           </div>
@@ -209,20 +214,20 @@ export default function HomePage() {
       </section>
 
       {/* ── Marquee Banner ───────────────────────────────────────────── */}
-      <div className="bg-[#3D2B1F] py-3 overflow-hidden">
+      <div className="bg-foreground py-3 overflow-hidden">
         <motion.div
           animate={{ x: ['0%', '-50%'] }}
           transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
           className="flex gap-8 whitespace-nowrap"
         >
           {Array.from({ length: 8 }).map((_, i) => (
-            <span key={i} className="text-[#C4A882] text-sm flex items-center gap-4">
+            <span key={i} className="text-primary text-sm flex items-center gap-4">
               ✦ Giao hàng miễn phí toàn quốc
-              <span className="text-[#6B5135] mx-2">|</span>
+              <span className="text-primary/80 mx-2">|</span>
               ✦ Vệ sinh & khử trùng chuyên nghiệp
-              <span className="text-[#6B5135] mx-2">|</span>
+              <span className="text-primary/80 mx-2">|</span>
               ✦ Hoàn tiền 100% nếu sản phẩm lỗi
-              <span className="text-[#6B5135] mx-2">|</span>
+              <span className="text-primary/80 mx-2">|</span>
             </span>
           ))}
         </motion.div>
@@ -231,12 +236,12 @@ export default function HomePage() {
       {/* ── Categories ────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <FadeSection>
-          <div className="flex items-end justify-between mb-8">
+            <div className="flex items-end justify-between mb-8">
             <div>
-              <span className="text-xs text-[#8B6F47] uppercase tracking-widest font-medium">Danh mục</span>
-              <h2 className="font-display text-3xl text-[#3D2B1F] mt-1">Khám phá bộ sưu tập</h2>
+              <span className="text-xs text-primary uppercase tracking-widest font-medium">Danh mục</span>
+              <h2 className="font-display text-3xl text-foreground mt-1">Khám phá bộ sưu tập</h2>
             </div>
-            <Link to="/products" className="text-sm text-[#8B6F47] hover:text-[#6B5135] flex items-center gap-1 transition-colors">
+            <Link to="/products" className="text-sm text-primary hover:text-primary/80 flex items-center gap-1 transition-colors">
               Xem tất cả <ArrowRight size={14} />
             </Link>
           </div>
@@ -252,7 +257,7 @@ export default function HomePage() {
               >
                 <Link
                   to={`/products?category=${cat.id}`}
-                  className="group flex flex-col items-center gap-3 p-4 bg-white border border-[#EDE0D0] rounded-2xl hover:border-[#C4A882] hover:shadow-md transition-all text-center"
+                  className="group flex flex-col items-center gap-3 p-4 bg-card border border-border rounded-2xl hover:border-primary hover:shadow-md transition-all text-center"
                 >
                   <div
                     className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm group-hover:scale-110 transition-transform"
@@ -261,8 +266,8 @@ export default function HomePage() {
                     {cat.icon}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-[#3D2B1F] leading-tight">{cat.name}</p>
-                    <p className="text-xs text-[#9B8E84] mt-0.5">{cat.count} sản phẩm</p>
+                    <p className="text-sm font-medium text-foreground leading-tight">{cat.name}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{cat.count} sản phẩm</p>
                   </div>
                 </Link>
               </motion.div>
@@ -272,15 +277,15 @@ export default function HomePage() {
       </section>
 
       {/* ── Featured Products ──────────────────────────────────────────── */}
-      <section className="bg-[#F0E8DC]/40 py-16">
+      <section className="bg-accent/40 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeSection>
             <div className="flex items-end justify-between mb-8">
               <div>
-                <span className="text-xs text-[#8B6F47] uppercase tracking-widest font-medium">Nổi bật</span>
-                <h2 className="font-display text-3xl text-[#3D2B1F] mt-1">Được yêu thích nhất</h2>
+                <span className="text-xs text-primary uppercase tracking-widest font-medium">Nổi bật</span>
+                <h2 className="font-display text-3xl text-foreground mt-1">Được yêu thích nhất</h2>
               </div>
-              <Link to="/products" className="text-sm text-[#8B6F47] hover:text-[#6B5135] flex items-center gap-1 transition-colors hidden sm:flex">
+              <Link to="/products" className="text-sm text-primary hover:text-primary/80 flex items-center gap-1 transition-colors hidden sm:flex">
                 Xem tất cả <ArrowRight size={14} />
               </Link>
             </div>
@@ -300,26 +305,26 @@ export default function HomePage() {
       <section id="how-it-works" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <FadeSection>
           <div className="text-center mb-12">
-            <span className="text-xs text-[#8B6F47] uppercase tracking-widest font-medium">Quy trình</span>
-            <h2 className="font-display text-3xl text-[#3D2B1F] mt-1">Thuê đơn giản chỉ 3 bước</h2>
+            <span className="text-xs text-primary uppercase tracking-widest font-medium">Quy trình</span>
+            <h2 className="font-display text-3xl text-foreground mt-1">Thuê đơn giản chỉ 3 bước</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
                 step: '01',
-                icon: <Sparkles size={24} className="text-[#8B6F47]" />,
+                icon: <Sparkles size={24} className="text-primary" />,
                 title: 'Chọn trang phục',
                 desc: 'Duyệt hàng nghìn thiết kế sang trọng theo danh mục, dịp đặc biệt hoặc phong cách cá nhân.',
               },
               {
                 step: '02',
-                icon: <RotateCcw size={24} className="text-[#8B6F47]" />,
+                icon: <RotateCcw size={24} className="text-primary" />,
                 title: 'Đặt ngày thuê',
                 desc: 'Chọn ngày nhận và trả hàng trên lịch trực tiếp. Giao hàng tận nơi trước ngày bạn cần.',
               },
               {
                 step: '03',
-                icon: <Leaf size={24} className="text-[#8B6F47]" />,
+                icon: <Leaf size={24} className="text-primary" />,
                 title: 'Mặc & hoàn trả',
                 desc: 'Toả sáng trong trang phục ý thích. Sau đó gói lại và gửi trả — chúng tôi lo phần còn lại.',
               },
@@ -330,16 +335,16 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.15 }}
-                className="bg-white rounded-2xl p-7 border border-[#EDE0D0] hover:shadow-md transition-shadow"
+                className="bg-card rounded-2xl p-7 border border-border hover:shadow-md transition-shadow"
               >
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-[#F0E8DC] rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 bg-accent rounded-2xl flex items-center justify-center flex-shrink-0">
                     {step.icon}
                   </div>
                   <div>
-                    <span className="text-xs font-bold text-[#C4A882] tracking-widest">{step.step}</span>
-                    <h3 className="font-display text-[#3D2B1F] text-lg mt-1 mb-2">{step.title}</h3>
-                    <p className="text-sm text-[#9B8E84] leading-relaxed">{step.desc}</p>
+                    <span className="text-xs font-bold text-primary tracking-widest">{step.step}</span>
+                    <h3 className="font-display text-foreground text-lg mt-1 mb-2">{step.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
                   </div>
                 </div>
               </motion.div>
@@ -349,15 +354,15 @@ export default function HomePage() {
       </section>
 
       {/* ── Trending Section ───────────────────────────────────────────── */}
-      <section className="bg-[#3D2B1F] py-16">
+      <section className="bg-foreground py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeSection>
             <div className="flex items-end justify-between mb-8">
               <div>
-                <span className="text-xs text-[#C4A882] uppercase tracking-widest font-medium">Xu hướng</span>
-                <h2 className="font-display text-3xl text-white mt-1">Đang được săn đón</h2>
+                <span className="text-xs text-primary uppercase tracking-widest font-medium">Xu hướng</span>
+                <h2 className="font-display text-3xl text-background mt-1">Đang được săn đón</h2>
               </div>
-              <Link to="/search" className="text-sm text-[#C4A882] hover:text-white flex items-center gap-1 transition-colors">
+              <Link to="/search" className="text-sm text-primary hover:text-background flex items-center gap-1 transition-colors">
                 Khám phá thêm <ArrowRight size={14} />
               </Link>
             </div>
@@ -373,17 +378,17 @@ export default function HomePage() {
       {/* ── Sustainability Banner ───────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <FadeSection>
-          <div className="relative bg-[#F0E8DC] rounded-3xl overflow-hidden">
+            <div className="relative bg-accent rounded-3xl overflow-hidden">
             <div className="grid grid-cols-1 lg:grid-cols-2 min-h-72">
               <div className="flex flex-col justify-center p-10 lg:p-14">
-                <span className="inline-flex items-center gap-2 text-xs text-[#8B6F47] uppercase tracking-widest font-medium mb-4">
+                <span className="inline-flex items-center gap-2 text-xs text-primary uppercase tracking-widest font-medium mb-4">
                   <Leaf size={14} />
                   Thời trang bền vững
                 </span>
-                <h2 className="font-display text-3xl sm:text-4xl text-[#3D2B1F] mb-4">
+                <h2 className="font-display text-3xl sm:text-4xl text-foreground mb-4">
                   Mặc đẹp, sống xanh
                 </h2>
-                <p className="text-[#6B5135] text-sm leading-relaxed mb-6">
+                <p className="text-muted-foreground text-sm leading-relaxed mb-6">
                   Mỗi lần thuê thay vì mua mới, bạn đã giúp giảm 73% lượng nước tiêu thụ và 80% khí thải carbon. rent4u là lựa chọn thời trang có trách nhiệm với hành tinh.
                 </p>
                 <div className="flex gap-6 mb-6">
@@ -393,14 +398,14 @@ export default function HomePage() {
                     { n: '100%', l: 'Tái sử dụng' },
                   ].map(({ n, l }) => (
                     <div key={l}>
-                      <div className="font-display text-2xl text-[#8B6F47]">{n}</div>
-                      <div className="text-xs text-[#9B8E84]">{l}</div>
+                      <div className="font-display text-2xl text-primary">{n}</div>
+                      <div className="text-xs text-muted-foreground">{l}</div>
                     </div>
                   ))}
                 </div>
                 <Link
                   to="/products"
-                  className="w-fit flex items-center gap-2 px-6 py-3 bg-[#8B6F47] text-white rounded-2xl hover:bg-[#6B5135] transition-colors text-sm"
+                  className="w-fit flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-2xl hover:bg-primary/90 transition-colors text-sm"
                 >
                   Thuê ngay <ArrowRight size={14} />
                 </Link>
@@ -411,7 +416,7 @@ export default function HomePage() {
                   alt="Sustainable fashion boutique"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#F0E8DC] via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-accent via-transparent to-transparent" />
               </div>
             </div>
           </div>
@@ -419,7 +424,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Values ──────────────────────────────────────────────────────── */}
-      <section className="bg-[#FAF8F5] border-t border-[#EDE0D0] py-12">
+      <section className="bg-background border-t border-border py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
@@ -436,12 +441,12 @@ export default function HomePage() {
                 transition={{ delay: i * 0.1 }}
                 className="flex flex-col items-center text-center gap-3 p-5"
               >
-                <div className="w-10 h-10 bg-[#F0E8DC] rounded-xl flex items-center justify-center text-[#8B6F47]">
+                <div className="w-10 h-10 bg-accent rounded-xl flex items-center justify-center text-primary">
                   {item.icon}
                 </div>
                 <div>
-                  <p className="font-medium text-[#3D2B1F] text-sm">{item.title}</p>
-                  <p className="text-xs text-[#9B8E84] mt-0.5">{item.desc}</p>
+                  <p className="font-medium text-foreground text-sm">{item.title}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{item.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -453,8 +458,8 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <FadeSection>
           <div className="text-center mb-10">
-            <span className="text-xs text-[#8B6F47] uppercase tracking-widest font-medium">Đánh giá</span>
-            <h2 className="font-display text-3xl text-[#3D2B1F] mt-1">Khách hàng nói gì về chúng tôi</h2>
+            <span className="text-xs text-primary uppercase tracking-widest font-medium">Đánh giá</span>
+            <h2 className="font-display text-3xl text-foreground mt-1">Khách hàng nói gì về chúng tôi</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {testimonials.map((t, i) => (
@@ -464,19 +469,19 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.15 }}
-                className="bg-white border border-[#EDE0D0] rounded-2xl p-6 hover:shadow-md transition-shadow"
+                className="bg-card border border-border rounded-2xl p-6 hover:shadow-md transition-shadow"
               >
                 <StarRating rating={t.rating} size="sm" />
-                <p className="text-sm text-[#6B5135] leading-relaxed mt-4 mb-5 font-display-italic">
-                  "{t.text}"
+                <p className="text-sm text-muted-foreground leading-relaxed mt-4 mb-5 font-display-italic">
+                  "{renderNoTranslate(t.text)}"
                 </p>
-                <div className="flex items-center gap-3 pt-4 border-t border-[#F0E8DC]">
-                  <div className="w-9 h-9 bg-[#EDE0D0] rounded-full flex items-center justify-center text-[#8B6F47] font-medium text-sm flex-shrink-0">
+                <div className="flex items-center gap-3 pt-4 border-t border-border">
+                  <div className="w-9 h-9 bg-muted rounded-full flex items-center justify-center text-primary font-medium text-sm flex-shrink-0">
                     {t.name.charAt(0)}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-[#3D2B1F]">{t.name}</p>
-                    <p className="text-xs text-[#9B8E84]">{t.role}</p>
+                    <p className="text-sm font-medium text-foreground">{t.name}</p>
+                    <p className="text-xs text-muted-foreground">{t.role}</p>
                   </div>
                 </div>
               </motion.div>
@@ -488,31 +493,31 @@ export default function HomePage() {
       {/* ── CTA Banner ───────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <FadeSection>
-          <div className="relative bg-[#3D2B1F] rounded-3xl px-8 py-14 text-center overflow-hidden">
+          <div className="relative bg-foreground rounded-3xl px-8 py-14 text-center overflow-hidden">
             <div className="absolute inset-0 opacity-10">
               <ImageWithFallback src={HERO_IMAGE_2} alt="" className="w-full h-full object-cover" />
             </div>
             <div className="relative">
-              <span className="text-xs text-[#C4A882] uppercase tracking-widest font-medium">Bắt đầu ngay hôm nay</span>
-              <h2 className="font-display text-3xl sm:text-4xl text-white mt-3 mb-4">
+              <span className="text-xs text-primary uppercase tracking-widest font-medium">Bắt đầu ngay hôm nay</span>
+              <h2 className="font-display text-3xl sm:text-4xl text-background mt-3 mb-4">
                 Mở tủ đồ vô hạn<br />
-                <span className="font-display-italic text-[#C4A882]">chỉ với vài click</span>
+                <span className="font-display-italic text-primary">chỉ với vài click</span>
               </h2>
-              <p className="text-[#9B8E84] text-sm mb-8 max-w-md mx-auto">
+              <p className="text-muted-foreground text-sm mb-8 max-w-md mx-auto">
                 Đăng ký ngay hôm nay và nhận ưu đãi giảm 20% cho đơn thuê đầu tiên.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 {!currentUser && (
                   <Link
                     to="/register"
-                    className="px-8 py-3.5 bg-[#C4A882] text-[#3D2B1F] rounded-2xl font-medium hover:bg-[#D4A853] transition-colors"
+                    className="px-8 py-3.5 bg-primary text-primary-foreground rounded-2xl font-medium hover:bg-primary/90 transition-colors"
                   >
                     Đăng ký miễn phí
                   </Link>
                 )}
                 <Link
                   to="/products"
-                  className="px-8 py-3.5 border border-[#6B5135] text-[#C4A882] rounded-2xl hover:border-[#C4A882] hover:text-white transition-colors"
+                  className="px-8 py-3.5 border border-primary text-primary rounded-2xl hover:border-primary/80 hover:text-white transition-colors"
                 >
                   Xem bộ sưu tập
                 </Link>

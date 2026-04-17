@@ -75,7 +75,7 @@ export default function LoginPage() {
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-card-foreground text-xs font-bold">R4</span>
             </div>
-            <span className="font-display text-white text-xl">rent4u</span>
+            <span translate="no" className="font-display text-white text-xl notranslate">rent4u</span>
           </div>
           <h2 className="font-display text-3xl text-white mb-3">
             Mở rộng tủ đồ của bạn<br />
@@ -99,7 +99,7 @@ export default function LoginPage() {
             <div className="w-8 h-8 bg-card-foreground rounded-lg flex items-center justify-center">
               <span className="text-accent-foreground text-xs font-bold">R4</span>
             </div>
-            <span className="font-display text-card-foreground text-xl">rent4u</span>
+            <span translate="no" className="font-display text-card-foreground text-xl notranslate">rent4u</span>
           </div>
 
           <h1 className="font-display text-3xl text-card-foreground mb-2">Chào mừng trở lại</h1>

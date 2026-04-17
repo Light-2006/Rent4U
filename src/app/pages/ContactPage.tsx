@@ -70,7 +70,7 @@ export default function ContactPage() {
           <span className="text-xs text-primary uppercase tracking-widest font-medium">Hỗ trợ</span>
           <h1 className="font-display text-4xl text-card-foreground mt-2 mb-3">Chúng tôi luôn sẵn sàng lắng nghe</h1>
           <p className="text-muted-foreground text-sm max-w-md mx-auto">
-            Có câu hỏi về trang phục hay đơn thuê? Đội ngũ rent4u sẵn sàng hỗ trợ bạn 24/7.
+            Có câu hỏi về trang phục hay đơn thuê? Đội ngũ <span translate="no" className="notranslate">rent4u</span> sẵn sàng hỗ trợ bạn 24/7.
           </p>
         </div>
 

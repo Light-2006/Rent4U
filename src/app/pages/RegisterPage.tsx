@@ -83,11 +83,11 @@ export default function RegisterPage() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
 
         <div className="absolute inset-0 flex flex-col justify-end p-12 text-white">
-          <div className="flex items-center gap-2 mb-8">
+            <div className="flex items-center gap-2 mb-8">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-card-foreground text-xs font-bold">R4</span>
             </div>
-            <span className="font-display text-white text-xl">rent4u</span>
+            <span translate="no" className="font-display text-white text-xl notranslate">rent4u</span>
           </div>
           <h2 className="font-display text-3xl text-white mb-3">
             Tham gia cộng đồng<br />
@@ -106,11 +106,11 @@ export default function RegisterPage() {
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md"
         >
-          <div className="flex items-center justify-center gap-2 mb-8 lg:hidden">
+            <div className="flex items-center justify-center gap-2 mb-8 lg:hidden">
             <div className="w-8 h-8 bg-card-foreground rounded-lg flex items-center justify-center">
               <span className="text-accent-foreground text-xs font-bold">R4</span>
             </div>
-            <span className="font-display text-card-foreground text-xl">rent4u</span>
+            <span translate="no" className="font-display text-card-foreground text-xl notranslate">rent4u</span>
           </div>
 
           <h1 className="font-display text-3xl text-card-foreground mb-2">Tạo tài khoản</h1>
@@ -223,10 +223,10 @@ export default function RegisterPage() {
               >
                 {agreed && <Check size={10} className="text-white" />}
               </div>
-              <span className="text-sm text-muted-foreground leading-relaxed ml-2">
+                <span className="text-sm text-muted-foreground leading-relaxed ml-2">
                 Tôi đồng ý với{' '}
                 <a href="#" className="text-primary underline">Điều khoản sử dụng</a> và{' '}
-                <a href="#" className="text-primary underline">Chính sách bảo mật</a> của rent4u
+                <a href="#" className="text-primary underline">Chính sách bảo mật</a> của <span translate="no" className="notranslate">rent4u</span>
               </span>
             </label>
 

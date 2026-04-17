@@ -112,7 +112,7 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-[#9B8E84]">© 2026 rent4u. Bảo lưu mọi quyền.</p>
+          <p className="text-xs text-[#9B8E84]">© 2026 <span translate="no" className="notranslate">rent4u</span>. Bảo lưu mọi quyền.</p>
           <div className="flex gap-4">
             {['Chính sách bảo mật', 'Điều khoản sử dụng', 'Cookie'].map((item) => (
               <a key={item} href="#" className="text-xs text-[#9B8E84] hover:text-[#C4A882] transition-colors">
